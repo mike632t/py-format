@@ -275,7 +275,7 @@ _operators = { # Operator Tokens
   '.py' : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
   '.ps1': ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
   '.sh' : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '=', '[', ']'],
-  '.vbs': ['+', '-', '/', '*', '^', '%', '='],
+  '.vbs': ['+', '-', '/', '*', '^', '%', '=', '==', '<>'],
   ''    : []
   }
  
@@ -369,6 +369,7 @@ _keywords =  { # Keyword Tokens
     'Xor'],
   '': []
   }
+
  
 _functions = { # Function Tokens
   '.a68': ['close', 'fixed', 'newline', 'open', 'print', 'read', 'reset',
@@ -464,7 +465,7 @@ _reserved = { # Reserved Tokens
   '.ps1': ['Continue', 'Ignore', 'Inquire', 'SilentlyContinue', 'Stop',
     'Suspend'],
   '.sh':  [],
-  '.vbs': ['Nothing', 'vbTab', 'vbCRLF'],
+  '.vbs': ['Nothing', 'vbTab', 'vbCRLF', 'vbOKOnly', 'vbError'],
   '':     []
   }
  
@@ -748,4 +749,3 @@ for _name in _names:
     raise SystemExit 
   except IOError as _err :
     _error(_err.strerror) 
- 
