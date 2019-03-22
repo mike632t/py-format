@@ -10,6 +10,30 @@
 # Ignore all files with a numeric extension
 *.[0-9]
 
+# Ignore all archives
+
+*.tar
+*.gz
+*.sav
+
+# Ignore test files
+alg-knuth.a68
+alg-list.a68
+alg-random.a68
+alg-roman.a68
+alg-stack.a68
+alg-times.a68
+alg-tree.a68
+bas-mandlebrot.bas
+dcl-tree.dcl
+ftn-tables.for
+ftn-tables.ftn
+gcc-parse.c
+gcc-pwdgen.c
+gcc-test.c
+py-format-dcl.py
+py-number.py
+
 # Ignore html
 *.htm
 *.html
