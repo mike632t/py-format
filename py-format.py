@@ -50,6 +50,7 @@
 # 04 Mar 19         - Started to add DOS Batch file keywords - MEJT
 # 19 Mar 19         - Updated  lists  of  Visual BASIC Script  keywords  and
 #                     functions - MEJT
+# 22 Mar 19         - Added Digital Comand Language definitions - MEJT
 #
 # To Do:            - Highlight operators.
 #                   - Fix 'leading spaces' problem (extra spaces being inserted
@@ -130,7 +131,8 @@ _formats = { # Formatting escape sequences or HTML
                            'white-space:pre; overflow:auto; ' +
                            'font-size:10pt; color:#696969;">'),
             'end'       : ('</div><br><p>\n'),
-            'comment'   : ('<span style="color:slategray;">'),
+#           'comment'   : ('<span style="color:slategray;">'),
+            'comment'   : ('<span style="color:sienna;">'),
             'string'    : ('<span style="color:forestgreen;">'),
             'number'    : ('<span style="color:darkturquoise;">'),
             'keyword'   : ('<span style="color:dodgerblue;">'),
@@ -180,14 +182,15 @@ _eoln = ['\n', '\v', '\f']
  
 _hexadecimal = '0123456789abcdefABCDEF'
  
-_types = ['.a68', '.bas', '.c', '.cmd','.f77', '.for', '.ftn', '.h', '.py',
-  '.ps1', '.sh', '.vbs', '']
+_types = ['.a68', '.bas', '.c', '.cmd', '.dcl', '.f77', '.for', '.ftn', '.h',
+ '.py', '.ps1', '.sh', '.vbs', '']
  
 _escape = { # Tokens that signal an escape character
   '.a68': ['' ],
   '.bas': ['' ],
   '.c'  : ['\\'],
   '.cmd'  : [''],
+  '.dcl': [''],
   '.f77': [''],
   '.for': [''],
   '.ftn': [''],
@@ -204,6 +207,7 @@ _quotes = { # Tokens that start or end a string
   '.bas': ['"'],
   '.c'  : ['"', '\''],
   '.cmd': ['"'],
+  '.dcl': ['"'],
   '.f77': ['"', '\''],
   '.for': ['"', '\''],
   '.ftn': ['"', '\''],
@@ -220,6 +224,7 @@ _delimiters = { # Token seperators
   '.bas': ['(', ')', '[', ']', ':', '.', ','],
   '.c'  : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   '.cmd': ['(', ')', '[', ']', ';', ':', '.', ',', '@'],
+  '.dcl': ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '\''],
   '.f77': ['(', ')', '[', ']', ':', '.', ','],
   '.for': ['(', ')', '[', ']', ':', '.', ','],
   '.ftn': ['(', ')', '[', ']', ':', '.', ','],
@@ -236,6 +241,7 @@ _comments = { # Tokens that start a comment section
   '.bas': ['REM'],
   '.c'  : ['/*', '//'],
   '.cmd': ['rem'],
+  '.dcl': ['\n$!'],
   '.f77': [],
   '.for': ['\nC'],
   '.ftn': ['\nC'],
@@ -252,6 +258,7 @@ _code = { # Tokens that end a comment section - paired with comments.
   '.bas': ['\n'],
   '.c'  : ['*/', '\n'],
   '.cmd': ['\n'],
+  '.dcl': ['\n'],
   '.f77': [],
   '.for': ['\n'],
   '.ftn': ['\n'],
@@ -269,6 +276,7 @@ _operators = { # Operator Tokens
   '.c'  : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
   '.cmd': ['+', '-', '/', '*', '==', '='],
   '.h'  : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
+  '.dcl': ['+', '-', '/', '*', '==', ':=', '='],
   '.f77': ['+', '-', '/', '*', '^', '%', '='],
   '.for': ['+', '-', '/', '*', '^', '%', '='],
   '.ftn': ['+', '-', '/', '*', '^', '%', '='],
@@ -309,7 +317,15 @@ _keywords =  { # Keyword Tokens
     
   '.cmd':['not','NOT', 'if', 'IF', 'set', 'SET', 'goto', 'GOTO',
       'echo', 'ECHO', '@', 'rem', 'REM'],
-      
+    
+  '.dcl':['CALL', 'CLOSE', 'CONTINUE', 'ENDSUBROUTINE', 'ELSE', 'EOD',
+      'EOJ', 'ENDIF', 'EXIT', 'GOSUB', 'GOTO', 'IF', 'ON', 'OPEN', 'READ',
+      'RETURN', 'RUN', 'SET', 'SHOW', 'SUBROUTINE', 'THEN', 'WRITE',
+      'call', 'close', 'continue', 'endsubroutine', 'else', 'eod', 'eoj',
+      'endif', 'exit', 'gosub', 'goto', 'if', 'on', 'open', 'read',
+      'return', 'run', 'set', 'show', 'subroutine', 'then', 'write'
+      ],
+    
   '.h': ['auto', 'break', 'case', 'char', 'const', 'continue', 'default',
     'do', 'double', 'else', 'enum', 'extern', 'float', 'for', 'goto', 'if',
     'int', 'long', 'register', 'return', 'short', 'signed', 'sizeof',
@@ -386,7 +402,26 @@ _functions = { # Function Tokens
     'exit'],
     
   '.cmd': [],
-  
+    
+  '.dcl': ['F$CONTEXT', 'F$CSID', 'F$CUNITS', 'F$CVSI', 'F$CVTIME',
+    'F$CVUI', 'F$DELTA_TIME', 'F$DEVICE', 'F$DIRECTORY', 'F$EDIT',
+    'F$ELEMENT', 'F$ENVIRONMENT', 'F$EXTRACT', 'F$FAO', 'F$FID_TO_NAME',
+    'F$FILE_ATTRIBUTES', 'F$GETDVI', 'F$GETENV', 'F$GETJPI', 'F$GETQUI',
+    'F$GETSYI', 'F$IDENTIFIER', 'F$INTEGER', 'F$LENGTH', 'F$LICENSE',
+    'F$LOCATE', 'F$LOGICAL', 'F$MATCH_WILD', 'F$MESSAGE', 'F$MODE', 'F$MULTIPATH',
+    'F$PARSE', 'F$PID', 'F$PRIVILEGE', 'F$PROCESS', 'F$SEARCH',
+    'F$SETPRV', 'F$STRING', 'F$TIME', 'F$TRNLNM', 'F$TYPE', 'F$UNIQUE',
+    'F$USER', 'F$VERIFY',
+    'f$context', 'f$csid', 'f$cunits', 'f$cvsi', 'f$cvtime',
+    'f$cvui', 'f$delta_time', 'f$device', 'f$directory', 'f$edit',
+    'f$element', 'f$environment', 'f$extract', 'f$fao', 'f$fid_to_name',
+    'f$file_attributes', 'f$getdvi', 'f$getenv', 'f$getjpi', 'f$getqui',
+    'f$getsyi', 'f$identifier', 'f$integer', 'f$length', 'f$license',
+    'f$locate', 'f$logical', 'f$match_wild', 'f$message', 'f$mode', 'f$multipath',
+    'f$parse', 'f$pid', 'f$privilege', 'f$process', 'f$search',
+    'f$setprv', 'f$string', 'f$time', 'f$trnlnm', 'f$type', 'f$unique',
+    'f$user', 'f$verify'],
+    
   '.h': ['close', 'fprintf', 'open', 'printf', 'read', 'reset', 'write',
     'exit'],
     
@@ -457,6 +492,7 @@ _reserved = { # Reserved Tokens
   '.bas': ['%INCLUDE'],
   '.c':   ['#include', '#define', '#ifdef'],
   '.cmd':   [],
+  '.dcl': ['error', 'warning', 'control_Y', 'ERROR', 'WARNING', 'CONTROL_Y'],
   '.h':   [],
   '.f77': [],
   '.for': [],
