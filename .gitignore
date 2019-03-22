@@ -1,3 +1,23 @@
+# Ignore all
+*
+
+# Unignore all with extensions 
+!*.*
+
+# Unignore all dirs
+!*/
+
+# Ignore all files with a numeric extension
+*.[0-9]
+
+# Ignore html
+*.htm
+*.html
+
+# Ignore text
+*.txt
+*.t
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
