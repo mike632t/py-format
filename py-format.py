@@ -51,6 +51,9 @@
 # 19 Mar 19         - Updated  lists  of  Visual BASIC Script  keywords  and
 #                     functions - MEJT
 # 22 Mar 19         - Added Digital Comand Language definitions - MEJT
+# 24 Jun 20         - Added some definitions for Rust - MEJT
+# 26 Jul 20         - Added Quick PASCAL definitions - MEJT
+# 14 Jan 21         - Added COMMENT and CO to ALGOL68 comemnt delimiters - MEJT
 #
 # To Do:            - Highlight operators.
 #                   - Fix 'leading spaces' problem (extra spaces being inserted
@@ -131,8 +134,8 @@ _formats = { # Formatting escape sequences or HTML
                            'white-space:pre; overflow:auto; ' +
                            'font-size:10pt; color:#696969;">'),
             'end'       : ('</div><br><p>\n'),
-#           'comment'   : ('<span style="color:slategray;">'),
-            'comment'   : ('<span style="color:sienna;">'),
+            'comment'   : ('<span style="color:slategray;">'),
+#           'comment'   : ('<span style="color:sienna;">'),
             'string'    : ('<span style="color:forestgreen;">'),
             'number'    : ('<span style="color:darkturquoise;">'),
             'keyword'   : ('<span style="color:dodgerblue;">'),
@@ -183,7 +186,7 @@ _eoln = ['\n', '\v', '\f']
 _hexadecimal = '0123456789abcdefABCDEF'
  
 _types = ['.a68', '.bas', '.c', '.cmd', '.dcl', '.f77', '.for', '.ftn', '.h',
- '.py', '.ps1', '.sh', '.vbs', '']
+ '.pas', '.py', '.ps1', '.rs', '.sh', '.vbs', '']
  
 _escape = { # Tokens that signal an escape character
   '.a68': ['' ],
@@ -195,8 +198,10 @@ _escape = { # Tokens that signal an escape character
   '.for': [''],
   '.ftn': [''],
   '.h'  : ['\\'],
+  '.pas': ['' ],
   '.py' : ['\\'],
   '.ps1': ['\`'],
+  '.rs' : ['\`'],
   '.sh' : ['\\'],
   '.vbs': [''],
   ''    : [''],
@@ -212,8 +217,10 @@ _quotes = { # Tokens that start or end a string
   '.for': ['"', '\''],
   '.ftn': ['"', '\''],
   '.h'  : ['"', '\''],
+  '.pas': ['\''],
   '.py' : ['"', '\''],
   '.ps1': ['"', '\''],
+  '.rs' : ['"', '\''],
   '.sh' : ['"', '\''],
   '.vbs': ['"'],
   ''    : ['']
@@ -224,20 +231,22 @@ _delimiters = { # Token seperators
   '.bas': ['(', ')', '[', ']', ':', '.', ','],
   '.c'  : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   '.cmd': ['(', ')', '[', ']', ';', ':', '.', ',', '@'],
-  '.dcl': ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '\''],
+  '.dcl': ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '\'','+', '-', '/', '*'],
   '.f77': ['(', ')', '[', ']', ':', '.', ','],
   '.for': ['(', ')', '[', ']', ':', '.', ','],
   '.ftn': ['(', ')', '[', ']', ':', '.', ','],
   '.h'  : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
+  '.pas': ['(', ')', '[', ']', ';', ':', '.', ',', '$', ' '],
   '.py' : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   '.ps1': ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!', '|'],
+  '.rs' : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   '.sh' : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   '.vbs': ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   ''    : []
   }
  
 _comments = { # Tokens that start a comment section
-  '.a68': ['{'],
+  '.a68': ['CO','COMMENT','{'],
   '.bas': ['REM'],
   '.c'  : ['/*', '//'],
   '.cmd': ['rem'],
@@ -246,15 +255,17 @@ _comments = { # Tokens that start a comment section
   '.for': ['\nC'],
   '.ftn': ['\nC'],
   '.h'  : ['/*', '//'],
+  '.pas': ['{', '(*'],
   '.py' : ['#'],
   '.ps1': ['#'],
+  '.rs' : ['//'],
   '.sh' : ['#'],
   '.vbs': ['\''],
   '': []
   }
  
 _code = { # Tokens that end a comment section - paired with comments.
-  '.a68': ['}'],
+  '.a68': ['CO','COMMENT','}'],
   '.bas': ['\n'],
   '.c'  : ['*/', '\n'],
   '.cmd': ['\n'],
@@ -263,8 +274,10 @@ _code = { # Tokens that end a comment section - paired with comments.
   '.for': ['\n'],
   '.ftn': ['\n'],
   '.h'  : ['*/', '\n'],
+  '.pas': ['}', '*)'],
   '.py' : ['\n'],
   '.ps1': ['\n'],
+  '.rs' : ['\n'],
   '.sh' : ['\n'],
   '.vbs': ['\n'],
   ''    : []
@@ -280,8 +293,10 @@ _operators = { # Operator Tokens
   '.f77': ['+', '-', '/', '*', '^', '%', '='],
   '.for': ['+', '-', '/', '*', '^', '%', '='],
   '.ftn': ['+', '-', '/', '*', '^', '%', '='],
+  '.pas': ['+', '-', '/', '*', '=', '<>', '>', '>=',  '<', '<=', '@'],
   '.py' : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
   '.ps1': ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
+  '.rs' : ['+', '-', '/', '*', '&', '\'&', '^', '~', '|', '%', '='],
   '.sh' : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '=', '[', ']'],
   '.vbs': ['+', '-', '/', '*', '^', '%', '=', '==', '<>'],
   ''    : []
@@ -355,6 +370,15 @@ _keywords =  { # Keyword Tokens
     'DIMENSION', 'COMMON', 'EQUIVALENCE', 'EXTERNAL', 'INTEGER', 'REAL',
     'DOUBLE PRECISION', 'COMPLEX', 'LOGICAL', 'DATA', 'NAMELIST','NOT',
     'ENTRY'],
+  
+  '.pas': [
+    'ABSOLUTE', 'ARRAY', 'BEGIN', 'CASE', 'CONST', 'CSTRING', 'DO', 
+    'DOWNTO', 'ELSE', 'END', 'EXTERNAL', 'FILE', 'FOR', 'FORWARD', 
+    'FUNCTION', 'GOTO', 'IF', 'IMPLEMENTATION', 'INHERITED', 'INLINE',
+    'INTERFACE', 'INTERRUPT', 'LABEL', 'NIL', 'OBJECT', 'OF', 'OVERRIDE', 
+    'PACKED', 'PROCEDURE', 'PROGRAM', 'RECORD', 'REPEAT', 'SET', 'STRING', 
+    'THEN', 'TO', 'TYPE', 'UNIT', 'UNTIL', 'USES', 'VAR', 'WHILE' , 'WITH', 
+    'SHR', 'SHL', 'AND', 'OR', 'XOR', 'DIV', 'MOD', 'NOT'],
     
   '.py': ['and', 'as', 'assert', 'break', 'class', 'continue','def', 'del',
     'elif', 'else', 'except', 'exec', 'finally', 'for', 'from', 'global',
@@ -369,6 +393,9 @@ _keywords =  { # Keyword Tokens
     'Process', 'Public', 'Return', 'Sequence', 'Static', 'Switch', 'Throw',
     'Trap', 'Try', 'Type', 'Until', 'Using', 'Var', 'While', 'WorkFlow'],
     
+  '.rs': ['and', 'as', 'assert', 'break', 'fn', 'for', 'if', 'in', 'let', 
+    'loop', 'move', 'mut', 'static', 'use'],
+  
   '.sh': ['case', 'do', 'done', 'elif', 'else', 'esac', 'fi', 'for',
     'function', 'if', 'in', 'select', 'then', 'time', 'until', 'while'],
     
@@ -420,7 +447,8 @@ _functions = { # Function Tokens
     'f$locate', 'f$logical', 'f$match_wild', 'f$message', 'f$mode', 'f$multipath',
     'f$parse', 'f$pid', 'f$privilege', 'f$process', 'f$search',
     'f$setprv', 'f$string', 'f$time', 'f$trnlnm', 'f$type', 'f$unique',
-    'f$user', 'f$verify'],
+    'f$user', 'f$verify',
+    'f$elem', 'f$ext', 'f$len', 'f$loc', 'F$ELEM', 'F$EXT', 'F$LEN', 'F$LOC'],
     
   '.h': ['close', 'fprintf', 'open', 'printf', 'read', 'reset', 'write',
     'exit'],
@@ -430,6 +458,19 @@ _functions = { # Function Tokens
   '.for': [],
   
   '.ftn': [],
+  
+  '.pas': ['addr', 'append', 'arctan', 'assign', 'blockread', 'blockwrite', 
+    'chdir', 'close', 'concat', 'copy', 'cos', 'cseg', 'dec', 'delete',
+    'dispose', 'diskfree', 'disksize', 'dseg', 'eof', 'eoln', 'erase', 
+    'exit', 'exp', 'filepos', 'filesize', 'fillchar', 'flush', 'frac', 
+    'freemem', 'getdir', 'getmem', 'halt', 'hi', 'inc', 'insert', 'int', 
+    'IOresult', 'length', 'ln', 'lo', 'mark', 'maxavail', 'memavail', 
+    'member', 'mkdir', 'move', 'new', 'odd', 'ofs', 'ord', 'paramcount', 
+    'paramstr', 'pi', 'pointer', 'pos', 'pred', 'ptr', 'random', 
+    'randomize', 'read', 'readln', 'release', 'rename', 'reset', 'rewrite', 
+    'rmdir', 'round', 'runerror', 'seek', 'seekeof', 'seekeoln', 'seg', 
+    'self', 'sin', 'sizeof', 'sqr', 'sqrt', 'sseg', 'str', 'succ', 'swap', 
+    'trunc', 'truncate', 'upcase', 'val', 'write', 'writeln'],
   
   '.py':  ['__import__', 'abs', 'all', 'apply', 'basestring', 'bin', 'bool',
     'buffer', 'bytearray', 'call', 'callable', 'chr', 'classmethod', 'cmp',
@@ -450,6 +491,8 @@ _functions = { # Function Tokens
     'Write-Error','Write-Host', 'Write-Output', 'Write-Verbose', 
     'Write-Warning'],
     
+  '.rs': ['print!', 'println!'],
+        
   '.sh':  ['alias', 'bg', 'bind', 'break', 'builtin', 'caller', 'cd',
     'command', 'continue', 'declare', 'dirs', 'echo', 'enable', 'eval',
     'exec', 'exit', 'export', 'fc', 'fg', 'getopts', 'hash', 'help',
@@ -497,9 +540,11 @@ _reserved = { # Reserved Tokens
   '.f77': [],
   '.for': [],
   '.ftn': [],
+  '.pas': [],
   '.py':  ['KeyboardInterrupt', 'SystemExit', 'IOError'],
   '.ps1': ['Continue', 'Ignore', 'Inquire', 'SilentlyContinue', 'Stop',
     'Suspend'],
+  '.rs':  [],
   '.sh':  [],
   '.vbs': ['Nothing', 'vbTab', 'vbCRLF', 'vbOKOnly', 'vbError'],
   '':     []
