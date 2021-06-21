@@ -63,6 +63,7 @@
 #                      to stop them being modified by WordPress - MT
 #  21 Jun 21   0.8   - Fixed a couple of minof issues in order to allow this
 #                      script to be used with older versions of Python - MT
+#                    - Explicitly closes the input file - MT
 #                    
 #
 import sys, os
@@ -940,3 +941,5 @@ for _name in _names:
     raise SystemExit 
   except IOError, (errno, errmsg):
     _error(errmsg)
+  else:
+     _file.close()
