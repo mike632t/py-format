@@ -1,4 +1,4 @@
-#!/usr/bin/python -s
+#!/usr/bin/python
 #
 #  py-format
 #
@@ -56,16 +56,18 @@
 #  11 Mar 21   0.6   - Added definitions for ADA85 - MT
 #                    - Added highlighting of operators, and modified ALGOL68
 #                      separators - MT
-#  09 Apr 21         - Added most of the definitions for COBOL - MEJT
+#  09 Apr 21         - Added most of the definitions for COBOL - MT
 #  16 Jun 21   0.7   - Explicitly includes line breaks - MT
 #                    - Modified  routine that encodes special characters  to
 #                      use the HTML character names rather than ASCII  codes
 #                      to stop them being modified by WordPress - MT
+#  21 Jun 21   0.8   - Fixed a couple of minof issues in order to allow this
+#                      script to be used with older versions of Python - MT
 #                    
 #
 import sys, os
 
-VERSION = "0.7"
+VERSION = "0.8"
  
 def _about():
   _path = os.path.basename(sys.argv[0])
@@ -786,156 +788,155 @@ for _name in _names:
   _line = ""
  
   try:
-    with open(_name, 'r') as _file:
-      if _restart : _lines = 0
-      sys.stdout.write((_formats[_format]["body"]))
-      #_char = _file.read(1)
-      _char = "\n" # Start with a newline!!
-      while _char:
-        if _char in _seperators + _eoln:
- 
-          # - Check for strings.
-          if _char in _quotes[_type]:
-            _offset = _quotes[_type].index(_char)
-            _flush(_expand(_buffer) + _formats[_format]["string"])
-            _flush(_expand(_char))
-            _flag = False
-            _numeric = False
-            _buffer = ""
-            _char = _file.read(1)
-            # Scan input until we find the closing quote.
-            # Note - There will allways be at least one escaped character,
-            # even if it is a quote!
-            while _char <> _quotes[_type][_offset] or (_flag and _count == 1):
-              if _char in _eoln:
-                _flush(_buffer + _formats[_format][""] + _expand(_char))
-                _flush(_formats[_format]["string"])
-                _buffer = ""
-                _char = ""
-              if _flag:
-                if _count == 1 and _char.isdigit(): _numeric = True
-                if (((_char in _hexadecimal and _count < 4 or
-                   (_char == "x" or _char =="X") and _count == 2) and
-                   _numeric) or _count == 1):
-                  # Both hexadecimal and octal constants contain up to three
-                  # digits, if you don't count the 'X'.
-                  if not (_char == "x" or _char =="X"): _count += 1
-                else:
-                  _buffer += _formats[_format][""]
-                  _buffer += _formats[_format]["string"]
-                  _flag = False
-              else:
-                if _char in _escape[_type]:
-                  _buffer += _formats[_format][""]
-                  _buffer += _formats[_format]["escape"]
-                  _flag = True
-                  _count = 1
-              _buffer += _expand(_char)
-              _char = _file.read(1)
-            # Print string
+    _file = open(_name, 'r')
+    if _restart : _lines = 0
+    sys.stdout.write((_formats[_format]["body"]))
+    _char = "\n" # Start with a newline!!
+    while _char:
+      if _char in _seperators + _eoln:
+
+        # - Check for strings.
+        if _char in _quotes[_type]:
+          _offset = _quotes[_type].index(_char)
+          _flush(_expand(_buffer) + _formats[_format]["string"])
+          _flush(_expand(_char))
+          _flag = False
+          _numeric = False
+          _buffer = ""
+          _char = _file.read(1)
+          # Scan input until we find the closing quote.
+          # Note - There will allways be at least one escaped character,
+          # even if it is a quote!
+          while _char <> _quotes[_type][_offset] or (_flag and _count == 1):
+            if _char in _eoln:
+              _flush(_buffer + _formats[_format][""] + _expand(_char))
+              _flush(_formats[_format]["string"])
+              _buffer = ""
+              _char = ""
             if _flag:
-              _buffer += _formats[_format][""] + _formats[_format]["string"]
-            _buffer += _expand(_char) + _formats[_format][""]
-            _flush(_buffer)
-            _char = ""
-            _buffer = ""
- 
-          # - Check for comments (which _may_ be preceded by a newline).
-          elif (_buffer in _comments[_type] or
-                _buffer[1:] in _comments[_type]):
-            if _buffer[:1] in _eoln or  _buffer[:1] in _spaces:
-              _flush(_expand(_buffer[:1]))
-              _buffer = _buffer[1:]
-            _offset = 0
-            for _count, _value in enumerate(_comments[_type]):
-              if _buffer in _value:
-                _offset = _count
-            _flush(_formats[_format]["comment"] + _expand(_buffer))
-            _buffer = ""
-            # - Process comment until we find a terminator.
-            while _char and not _code[_type][_offset] in (_buffer + _char):
-              if _char in _eoln:
-                _flush(_expand(_buffer) + _formats[_format][""])
-                _flush(_expand(_char) + _formats[_format]["comment"])
-                _buffer = ""
-                _char = ""
-              _buffer += _char
-              _char = _file.read(1)
+              if _count == 1 and _char.isdigit(): _numeric = True
+              if (((_char in _hexadecimal and _count < 4 or
+                 (_char == "x" or _char =="X") and _count == 2) and
+                 _numeric) or _count == 1):
+                # Both hexadecimal and octal constants contain up to three
+                # digits, if you don't count the 'X'.
+                if not (_char == "x" or _char =="X"): _count += 1
+              else:
+                _buffer += _formats[_format][""]
+                _buffer += _formats[_format]["string"]
+                _flag = False
+            else:
+              if _char in _escape[_type]:
+                _buffer += _formats[_format][""]
+                _buffer += _formats[_format]["escape"]
+                _flag = True
+                _count = 1
+            _buffer += _expand(_char)
+            _char = _file.read(1)
+          # Print string
+          if _flag:
+            _buffer += _formats[_format][""] + _formats[_format]["string"]
+          _buffer += _expand(_char) + _formats[_format][""]
+          _flush(_buffer)
+          _char = ""
+          _buffer = ""
+
+        # - Check for comments (which _may_ be preceded by a newline).
+        elif (_buffer in _comments[_type] or
+              _buffer[1:] in _comments[_type]):
+          if _buffer[:1] in _eoln or  _buffer[:1] in _spaces:
+            _flush(_expand(_buffer[:1]))
+            _buffer = _buffer[1:]
+          _offset = 0
+          for _count, _value in enumerate(_comments[_type]):
+            if _buffer in _value:
+              _offset = _count
+          _flush(_formats[_format]["comment"] + _expand(_buffer))
+          _buffer = ""
+          # - Process comment until we find a terminator.
+          while _char and not _code[_type][_offset] in (_buffer + _char):
             if _char in _eoln:
               _flush(_expand(_buffer) + _formats[_format][""])
-            else:
-              _flush(_expand(_buffer + _char) + _formats[_format][""])
+              _flush(_expand(_char) + _formats[_format]["comment"])
+              _buffer = ""
               _char = ""
-            _buffer = ""
- 
-          # - Check for keywords.
-          elif (_buffer in _keywords[_type] or
-                _buffer[1:] in _keywords[_type]):
-            if _buffer[:1] in _eoln or _seperators:
-              _flush(_expand(_buffer[:1]))
-              _buffer = _buffer[1:]
-            _flush(_formats[_format]["keyword"] + _expand(_buffer))
-            _flush(_formats[_format][""])
-            _buffer = ""
- 
-          # - Check for functions.
-          elif (_buffer in _functions[_type] or
-                _buffer[1:] in _functions[_type]):
-            if _buffer[:1] in _eoln or _seperators:
-              _flush(_expand(_buffer[:1]))
-              _buffer = _buffer[1:]
-            _flush(_formats[_format]["function"] + _expand(_buffer))
-            _flush(_formats[_format][""])
-            _buffer = ""
- 
-          # - Check for reserved words.
-          elif (_buffer in _reserved[_type] or
-                _buffer[1:] in _reserved[_type]):
-            if _buffer[:1] in _eoln or _seperators:
-              _flush(_expand(_buffer[:1]))
-              _buffer = _buffer[1:]
-            _flush(_formats[_format]["reserved"] + _expand(_buffer))
-            _flush(_formats[_format][""])
-            _buffer = ""
-            
-          # - Check for reserved words.
-          elif (_buffer in _operators[_type] or
-                _buffer[1:] in _operators[_type]):
-            if _buffer[:1] in _eoln or _seperators:
-              _flush(_expand(_buffer[:1]))
-              _buffer = _buffer[1:]
-            _flush(_formats[_format]["operator"] + _expand(_buffer))
-            _flush(_formats[_format][""])
-            _buffer = ""            
- 
-          # - Check for numbers.
-          elif _type <> '' and (_isnumeric(_buffer) or _isnumeric(_buffer[1:])):
-            if _buffer[:1] in _eoln or _seperators:
-              _flush(_expand(_buffer[:1]))
-              _buffer = _buffer[1:]
-              while (_isnumeric(_buffer + _char) and not
-                     _char in _seperators + _eoln):
-                _buffer += _char
-                _char = _file.read(1)
-            _flush(_formats[_format]["number"] + _expand(_buffer))
-            _flush(_formats[_format][""])
-            _buffer = ""
- 
-          _flush(_expand(_buffer))
-          _buffer = _char
-        else:
-          _buffer += _char
- 
-        _char = _file.read(1)
- 
-      _char = "\n" # End with a newline!!
-      _buffer += _char
-      _flush(_expand(_buffer) + _formats[_format][""])
-      sys.stdout.write((_formats[_format]["end"]))
+            _buffer += _char
+            _char = _file.read(1)
+          if _char in _eoln:
+            _flush(_expand(_buffer) + _formats[_format][""])
+          else:
+            _flush(_expand(_buffer + _char) + _formats[_format][""])
+            _char = ""
+          _buffer = ""
+
+        # - Check for keywords.
+        elif (_buffer in _keywords[_type] or
+              _buffer[1:] in _keywords[_type]):
+          if _buffer[:1] in _eoln or _seperators:
+            _flush(_expand(_buffer[:1]))
+            _buffer = _buffer[1:]
+          _flush(_formats[_format]["keyword"] + _expand(_buffer))
+          _flush(_formats[_format][""])
+          _buffer = ""
+
+        # - Check for functions.
+        elif (_buffer in _functions[_type] or
+              _buffer[1:] in _functions[_type]):
+          if _buffer[:1] in _eoln or _seperators:
+            _flush(_expand(_buffer[:1]))
+            _buffer = _buffer[1:]
+          _flush(_formats[_format]["function"] + _expand(_buffer))
+          _flush(_formats[_format][""])
+          _buffer = ""
+
+        # - Check for reserved words.
+        elif (_buffer in _reserved[_type] or
+              _buffer[1:] in _reserved[_type]):
+          if _buffer[:1] in _eoln or _seperators:
+            _flush(_expand(_buffer[:1]))
+            _buffer = _buffer[1:]
+          _flush(_formats[_format]["reserved"] + _expand(_buffer))
+          _flush(_formats[_format][""])
+          _buffer = ""
+          
+        # - Check for reserved words.
+        elif (_buffer in _operators[_type] or
+              _buffer[1:] in _operators[_type]):
+          if _buffer[:1] in _eoln or _seperators:
+            _flush(_expand(_buffer[:1]))
+            _buffer = _buffer[1:]
+          _flush(_formats[_format]["operator"] + _expand(_buffer))
+          _flush(_formats[_format][""])
+          _buffer = ""            
+
+        # - Check for numbers.
+        elif _type <> '' and (_isnumeric(_buffer) or _isnumeric(_buffer[1:])):
+          if _buffer[:1] in _eoln or _seperators:
+            _flush(_expand(_buffer[:1]))
+            _buffer = _buffer[1:]
+            while (_isnumeric(_buffer + _char) and not
+                   _char in _seperators + _eoln):
+              _buffer += _char
+              _char = _file.read(1)
+          _flush(_formats[_format]["number"] + _expand(_buffer))
+          _flush(_formats[_format][""])
+          _buffer = ""
+
+        _flush(_expand(_buffer))
+        _buffer = _char
+      else:
+        _buffer += _char
+
+      _char = _file.read(1)
+
+    _char = "\n" # End with a newline!!
+    _buffer += _char
+    _flush(_expand(_buffer) + _formats[_format][""])
+    sys.stdout.write((_formats[_format]["end"]))
  
   except KeyboardInterrupt :
     sys.stdout.write("\n")
     sys.stdout.flush()
     raise SystemExit 
-  except IOError as _err :
-    _error(_err.strerror)
+  except IOError, (errno, errmsg):
+    _error(errmsg)
