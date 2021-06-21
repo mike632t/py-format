@@ -1,66 +1,71 @@
 #!/usr/bin/python -s
 #
-# py-format
+#  py-format
 #
-# Formats the imput to colourize keywords, vairables, etc.
+#  Formats the input to colourise keywords, variables, etc.
 #
-# Output may be TEXT (default), ANSI, or HTML.
+#  Output may be TEXT (default), ANSI, or HTML.
 #
-# This  program is free software: you can redistribute it and/or modify  it
-# under  the  terms of the GNU General Public License as published  by  the
-# Free  Software  Foundation, either version 3 of the License, or (at  your
-# option) any later version.
+#  This  program is free software: you can redistribute it and/or modify  it
+#  under  the  terms of the GNU General Public License as published  by  the
+#  Free  Software  Foundation, either version 3 of the License, or (at  your
+#  option) any later version.
 #
-# This  program  is  distributed in the hope that it will  be  useful,  but
-# WITHOUT   ANY   WARRANTY;   without  even   the   implied   warranty   of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
-# Public License for more details.
+#  This  program  is  distributed in the hope that it will  be  useful,  but
+#  WITHOUT   ANY   WARRANTY;   without  even   the   implied   warranty   of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General
+#  Public License for more details.
 #
-# You  should have received a copy of the GNU General Public License  along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
+#  You  should have received a copy of the GNU General Public License  along
+#  with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# 20 Mar 16   0.1   - Initial version - MEJT
-# 10 Apr 16   0.2   - Reads input files character by character - MEJT
-# 11 Jun 16         - Keyword parsing working (with a lot of fudge for
-#                     newline characters to allow them to be part of a
-#                     token) - MEJT
-# 12 Jun 16         - Allow for multi line comments and strings - MEJT
-#                   - Add key words for shell scripts (bash) - MEJT
-# 16 Jun 16         - Add escape character handling - MEJT
-# 25 Jun 16         - Added ability to produce HTML and subsitute character
-#                     codes for special characters to preserve formatting
-#                     when HTML is included in Wordpress posts - MEJT
-#                   - Fixed bug in escape sequence code - MEJT
-#                   - Fix bug when highlighting functions - MEJT
-# 26 Jun 16         - Subsitute character codes in escape sequences - MEJT
-#                   - Highlights numbers - MEJT
-#                   - Line numbers now formatted properly when output is
-#                     HTML - MEJT
-# 15 Jul 16         - Fixed issues with hightlighting escape characters and
-#                     added hightlighting of reserved words - MEJT
-# 28 Nov 16         - Modified ANSI highlighting codes - MEJT
-# 08 Mar 17         - Added a qualifier to allow the user to explicitly
-#                     select plain text output - MEJT
-#                   - HTML output now encodes 'x' and 'X' characters as they
-#                     are modified by Wordpress - MEJT
-# 12 Aug 18         - Added Microsoft BASIC keywords - MEJT
-#                   - Start each file with a new line, which also ensures
-#                     that the first character is formatted correctly - MEJT
-#                   - Started to add PowerShell keywords - MEJT 
-# 04 Mar 19         - Started to add DOS Batch file keywords - MEJT
-# 19 Mar 19         - Updated  lists  of  Visual BASIC Script  keywords  and
-#                     functions - MEJT
-# 22 Mar 19         - Added Digital Comand Language definitions - MEJT
-# 24 Jun 20         - Added some definitions for Rust - MEJT
-# 26 Jul 20         - Added Quick PASCAL definitions - MEJT
-# 14 Jan 21         - Added COMMENT and CO to ALGOL68 comemnt delimiters - MEJT
+#  20 Mar 16   0.1   - Initial version - MT
+#  10 Apr 16         - Reads input files character by character - MT
+#  11 Jun 16         - Keyword parsing works (using a bit of fudge to handle
+#                      newline characters as part of a token) - MT
+#  12 Jun 16         - Allow for multi line comments and strings - MT
+#                    - Add key words for shell scripts (bash) - MT
+#  16 Jun 16         - Add escape character handling - MT
+#  25 Jun 16         - Added  the ability to produce HTML output and  encode
+#                      special any characters to stop them being modified by
+#                      WordPress - MT
+#                    - Fixed bug in escape sequence code - MT
+#                    - Fixed bug when highlighting functions - MT
+#  26 Jun 16         - Substitutes character codes in escape sequences - MT
+#                    - Highlights numbers - MT
+#                    - Line  numbers formatted properly when producing  HTML 
+#                      output - MT
+#  15 Jul 16   0.2   - Fixed  issue with highlighting escape characters  and
+#                      added highlighting of reserved words - MT
+#  28 Nov 16         - Modified ANSI highlighting codes - MT
+#  08 Mar 17         - Added  a  qualifier to allow the user  to  explicitly
+#                      select plain text output - MT
+#                    - HTML encode 'x' and 'X' characters to stop them being
+#                      modified by WordPress - MT
+#  12 Aug 18   0.3   - Added Microsoft BASIC keywords - MT
+#                    - Start  each file with a new line, which also  ensures
+#                      that the first character is formatted correctly - MT
+#                    - Added some PowerShell keywords - MT 
+#  04 Mar 19   0.4   - Added some DOS Batch file keywords - MT
+#  19 Mar 19         - Updated  lists  of Visual BASIC Script  keywords  and
+#                      builtin functions - MT
+#  22 Mar 19         - Added definitions for Digital Command Language - MT
+#  24 Jun 20         - Added some definitions for Rust - MT
+#  26 Jul 20         - Added definitions for Quick PASCAL - MT
+#  14 Jan 21   0.5   - Added comment delimiters for ALGOL68- MT
+#  11 Mar 21   0.6   - Added definitions for ADA85 - MT
+#                    - Added highlighting of operators, and modified ALGOL68
+#                      separators - MT
+#  09 Apr 21         - Added most of the definitions for COBOL - MEJT
+#  16 Jun 21   0.7   - Explicitly includes line breaks - MT
+#                    - Modified  routine that encodes special characters  to
+#                      use the HTML character names rather than ASCII  codes
+#                      to stop them being modified by WordPress - MT
+#                    
 #
-# To Do:            - Highlight operators.
-#                   - Fix 'leading spaces' problem (extra spaces being inserted
-#                     at the beginning of a line...)
-#
- 
 import sys, os
+
+VERSION = "0.7"
  
 def _about():
   _path = os.path.basename(sys.argv[0])
@@ -83,7 +88,7 @@ def _about():
  
 def _version():
   _path = os.path.basename(sys.argv[0])
-  sys.stdout.write(_path + " 0.1\n" +
+  sys.stdout.write(_path + " " + VERSION +"\n" +
     "License GPLv3+: GNU GPL version 3 or later.\n"
     "This is free software: you are free to change and redistribute it.\n"
     "There is NO WARRANTY, to the extent permitted by law.\n")
@@ -122,7 +127,7 @@ _formats = { # Formatting escape sequences or HTML
             'function'  : ('\033[1;2;35m'), # Purple
             'reserved'  : ('\033[1;34m'),   # Blue
             'definition': ('\033[0;35m'),   # Magenta
-            'operator'  : ('\033[0;35m'),   # Magenta
+            'operator'  : ('\033[0;96m'),   # Magenta
             'escape'    : ('\033[1;31m'),   # Dark red
             ''          : ('\033[0m')},
  
@@ -133,7 +138,7 @@ _formats = { # Formatting escape sequences or HTML
                            'font-family:monospace; white-space:nowrap; '
                            'white-space:pre; overflow:auto; ' +
                            'font-size:10pt; color:#696969;">'),
-            'end'       : ('</div><br><p>\n'),
+            'end'       : ('</div><br>\n'),
             'comment'   : ('<span style="color:slategray;">'),
 #           'comment'   : ('<span style="color:sienna;">'),
             'string'    : ('<span style="color:forestgreen;">'),
@@ -145,26 +150,7 @@ _formats = { # Formatting escape sequences or HTML
             'operator'  : ('<span style="color:darkcyan;">'),
             'escape'    : ('<span style="color:brown;">'),
             ''          : ('</span>')},
- 
-#  'html':  {'body'      : ('<div style="border-color:#d2d0ce; ' +
-#                           'border-style:solid; border-width:1px; ' +
-#                           'border-radius:5px; background:#f7f7f7; ' +
-#                           'padding:10px; line-height:133%; ' +
-#                           'font-family:monospace; white-space:nowrap; '
-#                           'white-space:pre; overflow:auto; ' +
-#                           'font-size:10pt; color:#696969;">'),
-#            'end'       : ('</div><br><p>\n'),
-#            'comment'   : ('<span style="color:slategray;">'),
-#            'string'    : ('<span style="color:dodgerblue;">'),
-#            'number'    : ('<span>'),
-#            'keyword'   : ('<span style="color:forestgreen;">'),
-#            'function'  : ('<span style="color:brown;">'),
-#            'reserved'  : ('<span style="color:brown;">'),
-#            'definition': ('<span style="color:brown;">'),
-#            'operator'  : ('<span>'),
-#            'escape'    : ('<span style="color:forestgreen;">'),
-#            ''          : ('</span>')},
- 
+  
   ''    :  {'body'      : (''),
             'end'       : (''),
             'comment'   : (''),
@@ -185,14 +171,16 @@ _eoln = ['\n', '\v', '\f']
  
 _hexadecimal = '0123456789abcdefABCDEF'
  
-_types = ['.a68', '.bas', '.c', '.cmd', '.dcl', '.f77', '.for', '.ftn', '.h',
- '.pas', '.py', '.ps1', '.rs', '.sh', '.vbs', '']
+_types = ['.a68', '.ada', '.bas', '.c', '.cmd', '.cob', '.dcl', '.f77', 
+  '.for', '.ftn', '.h', '.pas', '.py', '.ps1', '.rs', '.sh', '.vbs', '']
  
 _escape = { # Tokens that signal an escape character
   '.a68': ['' ],
+  '.ada': ['' ],
   '.bas': ['' ],
   '.c'  : ['\\'],
-  '.cmd'  : [''],
+  '.cmd': [''],
+  '.cob': [''],
   '.dcl': [''],
   '.f77': [''],
   '.for': [''],
@@ -209,9 +197,11 @@ _escape = { # Tokens that signal an escape character
  
 _quotes = { # Tokens that start or end a string
   '.a68': ['"'],
+  '.ada': ['"'],
   '.bas': ['"'],
   '.c'  : ['"', '\''],
   '.cmd': ['"'],
+  '.cob': ['"', '\''],
   '.dcl': ['"'],
   '.f77': ['"', '\''],
   '.for': ['"', '\''],
@@ -227,10 +217,12 @@ _quotes = { # Tokens that start or end a string
   }
  
 _delimiters = { # Token seperators
-  '.a68': ['(', ')', '[', ']', ';', ':', '.', ','],
+  '.a68': ['(', ')', '[', ']', ';', ','],
+  '.ada': ['(', ')', '[', ']', ';', ','],
   '.bas': ['(', ')', '[', ']', ':', '.', ','],
   '.c'  : ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '!'],
   '.cmd': ['(', ')', '[', ']', ';', ':', '.', ',', '@'],
+  '.cob': ['(', ')', '[', ']', ':', '.', ','],
   '.dcl': ['(', ')', '{', '}', '[', ']', ';', ':', '.', ',', '\'','+', '-', '/', '*'],
   '.f77': ['(', ')', '[', ']', ':', '.', ','],
   '.for': ['(', ')', '[', ']', ':', '.', ','],
@@ -246,10 +238,12 @@ _delimiters = { # Token seperators
   }
  
 _comments = { # Tokens that start a comment section
-  '.a68': ['CO','COMMENT','{'],
+  '.a68': ['CO', 'COMMENT', '{'],
+  '.ada': ['--'],
   '.bas': ['REM'],
   '.c'  : ['/*', '//'],
   '.cmd': ['rem'],
+  '.cob': ['\n****', '\n*******'],
   '.dcl': ['\n$!'],
   '.f77': [],
   '.for': ['\nC'],
@@ -265,10 +259,12 @@ _comments = { # Tokens that start a comment section
   }
  
 _code = { # Tokens that end a comment section - paired with comments.
-  '.a68': ['CO','COMMENT','}'],
+  '.a68': ['CO', 'COMMENT', '}'],
+  '.ada': ['\n'],
   '.bas': ['\n'],
   '.c'  : ['*/', '\n'],
   '.cmd': ['\n'],
+  '.cob': ['\n', '\n'],
   '.dcl': ['\n'],
   '.f77': [],
   '.for': ['\n'],
@@ -284,10 +280,14 @@ _code = { # Tokens that end a comment section - paired with comments.
   }
  
 _operators = { # Operator Tokens
-  '.a68': ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
+  '.a68': ['+', '-', '/', '*', '&', '^', '~', '|', '%', '=', ':='],
+  '.ada': ['&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';',
+    '<', '=', '>', '|', '=>', '..', '**', ':=', '/=', '>=', '<=', '<<',
+    '>>', '<>'],
   '.bas': ['+', '-', '/', '*', '^', '='],
   '.c'  : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
   '.cmd': ['+', '-', '/', '*', '==', '='],
+  '.cob': ['+', ' - ', '*', '/', '**', '>', '<', '>=', '<='],
   '.h'  : ['+', '-', '/', '*', '&', '^', '~', '|', '%', '='],
   '.dcl': ['+', '-', '/', '*', '==', ':=', '='],
   '.f77': ['+', '-', '/', '*', '^', '%', '='],
@@ -311,6 +311,16 @@ _keywords =  { # Keyword Tokens
     'OP', 'OUT', 'OVER', 'PAR', 'PR', 'PRAGMAT', 'PRIO', 'PROC', 'PROGRAM',
     'REAL', 'REF', 'SEMA', 'SHORT', 'SKIP', 'STRING', 'STRUCT', 'THEN',
     'TO', 'true', 'UNION,', 'VOID', 'WHILE'],
+
+  '.ada': ['abort', 'abs', 'accept', 'access', 'all', 'and', 'array', 'at',
+    'begin', 'body', 'case', 'constant', 'declare', 'delay', 'delta',
+    'digits', 'do', 'else', 'elsif', 'end', 'entry', 'exception', 'exit',
+    'for', 'function', 'generic', 'goto', 'if', 'in', 'is', 'limited',
+    'loop', 'mod', 'new', 'not', 'null', 'of', 'or', 'others', 'out',
+    'package', 'pragma', 'private', 'procedure', 'raise', 'range', 'record',
+    'rem', 'renames', 'return', 'reverse', 'select', 'separate', 'subtype',
+    'task', 'terminate', 'then', 'type', 'use', 'when', 'while', 'with',
+    'xor'],
     
   '.bas':['NOT', 'AND', 'OR', 'XOR', 'IMP', 'EQV', 
     'AUTO', 'BASE', 'CALL', 'CHAIN', 'CLEAR', 'CLOAD', 'CLOSE', 'COMMON'
@@ -332,7 +342,86 @@ _keywords =  { # Keyword Tokens
     
   '.cmd':['not','NOT', 'if', 'IF', 'set', 'SET', 'goto', 'GOTO',
       'echo', 'ECHO', '@', 'rem', 'REM'],
-    
+
+  '.cob':['ACCEPT', 'ACCESS', 'ADD', 'ADVANCING', 'AFTER', 'ALL', 
+      'ALLOWING', 'ALPHABET', 'ALPHABETIC', 'ALPHABETIC-LOWER', 
+      'ALPHABETIC-UPPER', 'ALPHANUMERIC', 'ALPHANUMERIC-EDITED', 'ALSO', 
+      'ALTER', 'ALTERNATE', 'AND', 'ANY', 'APPLY', 'ARE', 'AREA', 'AREAS', 
+      'ASCENDING', 'ASSIGN', 'AT', 'AUTHOR', 'AUTOMATIC', 'AUTOTERMINATE', 
+      'BATCH', 'BEFORE', 'BEGINNING', 'BINARY', 'BIT', 'BITS', 'BLANK', 
+      'BLINKING', 'BLOCK', 'BOLD', 'BOOLEAN', 'BOTTOM', 'BY', 'CALL', 
+      'CANCEL', 'CD', 'CF', 'CH', 'CHARACTER', 'CHARACTERS', 'CLASS', 
+      'CLOCK-UNITS', 'CLOSE', 'COBOL', 'CODE', 'CODE-SET', 'COLLATING', 
+      'COLUMN', 'COMMA', 'COMMIT', 'COMMON', 'COMMUNICATION', 'COMP', 
+      'COMP-1', 'COMP-2', 'COMP-3', 'COMP-4', 'COMP-5', 'COMP-6', 
+      'COMPUTATIONAL', 'COMPUTATIONAL-1', 'COMPUTATIONAL-2', 
+      'COMPUTATIONAL-3', 'COMPUTATIONAL-4', 'COMPUTATIONAL-5', 
+      'COMPUTATIONAL-6', 'COMPUTATIONAL-X', 'COMPUTE', 'COMP-X', 
+      'CONCURRENT', 'CONFIGURATION', 'CONNECT', 'CONTAIN', 'CONTAINS', 
+      'CONTENT', 'CONTINUE', 'CONTROL', 'CONTROLS', 'CONVERSION', 
+      'CONVERTING', 'COPY', 'CORR', 'CORRESPONDING', 'COUNT', 'CRT', 
+      'CURRENCY', 'CURRENT', 'CURSOR', 'DATA', 'DATE', 'DATE-COMPILED', 
+      'DATE-WRITTEN', 'DAY', 'DAY-OF-WEEK', 'DE', 'DEBUGGING', 
+      'DECIMAL-POINT', 'DECLARATIVES', 'DEFAULT', 'DELETE', 'DELIMITED', 
+      'DELIMITER', 'DEPENDENCY', 'DEPENDING', 'DESCENDING', 'DESCRIPTOR', 
+      'DESTINATION', 'DETAIL', 'DICTIONARY', 'DISABLE', 'DISCONNECT', 
+      'DISPLAY', 'DISPLAY-6', 'DISPLAY-7', 'DISPLAY-9', 'DIVIDE', 
+      'DIVISION', 'DOES', 'DOWN', 'DUPLICATE', 'DUPLICATES', 'ECHO', 
+      'EDITING', 'EGI', 'ELSE', 'EMI', 'EMPTY', 'ENABLE', 'END', 
+      'END-ACCEPT', 'END-ADD', 'END-CALL', 'END-COMMIT', 'END-COMPUTE', 
+      'END-CONNECT', 'END-DELETE', 'END-DISCONNECT', 'END-DIVIDE', 
+      'END-ERASE', 'END-EVALUATE', 'END-FETCH', 'END-FIND', 'END-FINISH', 
+      'END-FREE', 'END-GET', 'END-IF', 'ENDING', 'END-KEEP', 'END-MODIFY', 
+      'END-MULTIPLY', 'END-OF-PAGE', 'END-PERFORM', 'END-READ', 
+      'END-READY', 'END-RECEIVE', 'END-RECONNECT', 'END-RETURN', 
+      'END-REWRITE', 'END-ROLLBACK', 'END-SEARCH', 'END-START', 
+      'END-STORE', 'END-STRING', 'END-SUBTRACT', 'END-UNSTRING', 
+      'END-WRITE', 'ENTER', 'ENVIRONMENT', 'EOP', 'EQUAL', 'EQUALS', 
+      'ERROR', 'ESI', 'EVALUATE', 'EVERY', 'EXCEEDS', 'EXCEPTION', 
+      'EXCLUSIVE', 'EXIT', 'EXOR', 'EXTEND', 'EXTERNAL', 'FAILURE', 
+      'FALSE', 'FD', 'FETCH', 'FILE', 'FILE-CONTROL', 'FILE-ID', 'FILLER', 
+      'FINAL', 'FIND', 'FINISH', 'FIRST', 'FOOTING', 'FOR', 'FREE', 'FROM', 
+      'FUNCTION', 'GENERATE', 'GET', 'GIVING', 'GLOBAL', 'GO', 'GREATER', 
+      'GROUP', 'HEADING', 'HIGH-VALUE', 'HIGH-VALUES', 'ID', 'IDENT', 
+      'IDENTIFICATION', 'IF', 'IN', 'INCLUDING', 'INDEX', 'INDEXED', 
+      'INDICATE', 'INITIAL', 'INITIALIZE', 'INITIATE', 'INPUT', 
+      'INPUT-OUTPUT', 'INSPECT', 'INSTALLATION', 'INTO', 'INVALID', 'I-O', 
+      'I-O-CONTROL', 'IS', 'JUST', 'JUSTIFIED', 'KEEP', 'KEY', 'LABEL', 
+      'LAST', 'LD', 'LEADING', 'LEFT', 'LENGTH', 'LESS', 'LIMIT', 'LIMITS', 
+      'LINAGE', 'LINAGE-COUNTER', 'LINE', 'LINE-COUNTER', 'LINES', 
+      'LINKAGE', 'LOCALLY', 'LOCK', 'LOCK-HOLDING', 'LOW-VALUE', 
+      'LOW-VALUES', 'MANUAL', 'MATCH', 'MATCHES', 'MEMBER', 'MEMBERSHIP', 
+      'MEMORY', 'MERGE', 'MESSAGE', 'MODE', 'MODIFY', 'MODULES', 'MOVE', 
+      'MULTIPLE', 'MULTIPLY', 'NATIVE', 'NEGATIVE', 'NEXT', 'NO', 
+      'NON-NULL', 'NOT', 'NULL', 'NUMBER', 'NUMERIC', 'NUMERIC-EDITED', 
+      'OBJECT-COMPUTER', 'OCCURS', 'OF', 'OFF', 'OFFSET', 'OMITTED', 'ON', 
+      'ONLY', 'OPEN', 'OPTIONAL', 'OR', 'ORDER', 'ORGANIZATION',  
+      'PACKED-DECIMAL', 'PADDING', 'PAGE', 'PAGE-COUNTER', 'PERFORM', 'PF', 
+      'PICTURE', 'PLUS', 'POINTER', 'POSITION', 'POSITIVE', 'PREVIOUS', 
+      'PH', 'PIC', 'PRINTING', 'PRIOR', 'PROCEDURE', 'PROCEDURES', 
+      'PROCEED', 'PROGRAM', 'PROGRAM-ID', 'PROTECTED', 'PURGE', 'QUEUE', 
+      'QUOTE', 'QUOTES', 'RANDOM', 'RD', 'READ', 'READERS', 'READY', 
+      'REALM', 'REALMS', 'RECEIVE', 'RECONNECT', 'RECORD', 'RECORD-NAME', 
+      'RECORDS', 'REDEFINES', 'REEL', 'REFERENCE', 'REFERENCE-MODIFIER', 
+      'REFERENCES', 'REGARDLESS', 'RELATIVE', 'RELEASE', 'REMAINDER', 
+      'REMOVAL', 'RENAMES', 'REPLACE', 'REPLACING', 'REPORT', 'REPORTING', 
+      'REPORTS', 'RERUN', 'RESERVE', 'RESET', 'RETAINING', 'RETRIEVAL', 
+      'RETURN', 'REVERSED', 'REWIND', 'REWRITE', 'RF', 'RH', 'RIGHT', 
+      'ROLLBACK', 'ROUNDED', 'RUN', 'SAME', 'SD', 'SEARCH', 'SECTION', 
+      'SECURITY', 'SEGMENT', 'SEGMENT-LIMIT', 'SELECT', 'SEND', 'SENTENCE', 
+      'SEPARATE', 'SEQUENCE', 'SEQUENCE-NUMBER', 'SEQUENTIAL', 'SET', 
+      'SETS', 'SIGN', 'SIZE', 'SORT', 'SORT-MERGE', 'SOURCE', 
+      'SOURCE-COMPUTER', 'SPACE', 'SPACES', 'SPECIAL-NAMES', 'STANDARD', 
+      'START', 'STATUS', 'STOP', 'STORE', 'STREAM', 'STRING', 'SUBTRACT', 
+      'SUCCESS', 'SUM', 'SUPPRESS', 'SYMBOLIC', 'SYNC', 'SYNCHRONIZED', 
+      'TABLE', 'TALLYING', 'TAPE', 'TENANT', 'TERMINAL', 'TERMINATE', 
+      'TEST', 'TEXT', 'THAN', 'THEN', 'THROUGH', 'THRU', 'TIME', 'TIMES', 
+      'TO', 'TOP', 'TRAILING', 'TRUE', 'TYPE', 'UNDERLINED', 'UNEQUAL', 
+      'UNIT', 'UNLOCK', 'UNSTRING', 'UNTIL', 'UP', 'UPDATE', 'UPDATERS', 
+      'UPON', 'USAGE', 'USAGE-MODE', 'USE', 'USING', 'VALUE', 'VALUES', 
+      'VARYING', 'WAIT', 'WHEN', 'WHERE', 'WITH', 'WITHIN', 'WORDS', 
+      'WORKING-STORAGE', 'WRITE', 'WRITERS', 'ZERO', 'ZEROES', 'ZEROS'],
+ 
   '.dcl':['CALL', 'CLOSE', 'CONTINUE', 'ENDSUBROUTINE', 'ELSE', 'EOD',
       'EOJ', 'ENDIF', 'EXIT', 'GOSUB', 'GOTO', 'IF', 'ON', 'OPEN', 'READ',
       'RETURN', 'RUN', 'SET', 'SHOW', 'SUBROUTINE', 'THEN', 'WRITE',
@@ -417,6 +506,8 @@ _keywords =  { # Keyword Tokens
 _functions = { # Function Tokens
   '.a68': ['close', 'fixed', 'newline', 'open', 'print', 'read', 'reset',
     'sqrt', 'write'],
+
+  '.ada': [],
     
   '.bas':['ABS', 'ASC', 'ATN', 'CDBL', 'CHR$', 'CINT', 'COS', 'CSNG', 'CVD',
     'CVI', 'CVS', 'EOF', 'EXP', 'FIX', 'FRE', 'HEX$', 'INKEY$', 'INP',
@@ -429,7 +520,9 @@ _functions = { # Function Tokens
     'exit'],
     
   '.cmd': [],
-    
+
+  '.cob': [],
+
   '.dcl': ['F$CONTEXT', 'F$CSID', 'F$CUNITS', 'F$CVSI', 'F$CVTIME',
     'F$CVUI', 'F$DELTA_TIME', 'F$DEVICE', 'F$DIRECTORY', 'F$EDIT',
     'F$ELEMENT', 'F$ENVIRONMENT', 'F$EXTRACT', 'F$FAO', 'F$FID_TO_NAME',
@@ -532,9 +625,11 @@ _functions = { # Function Tokens
  
 _reserved = { # Reserved Tokens 
   '.a68': [],
+  '.ada': [],
   '.bas': ['%INCLUDE'],
   '.c':   ['#include', '#define', '#ifdef'],
-  '.cmd':   [],
+  '.cmd': [],
+  '.cob': [],
   '.dcl': ['error', 'warning', 'control_Y', 'ERROR', 'WARNING', 'CONTROL_Y'],
   '.h':   [],
   '.f77': [],
@@ -584,9 +679,9 @@ def _expand(_buffer):
       elif _char == " ":
         _return += "&nbsp;"
       elif _char == ">":
-        _return += "&#062;"
+        _return += "&gt;"
       elif _char == "<":
-        _return += "&#060;"
+        _return += "&lt;"
       elif _char == "-":
         _return += "&#045;"
       elif _char == ".":
@@ -594,13 +689,17 @@ def _expand(_buffer):
       elif _char == "'":
         _return += "&#039;"
       elif _char == "\"":
-        _return += "&#034;"
+        _return += "&quot;"
+      elif _char == "\'":
+        _return += "&apos;"
       elif _char == ":":
         _return += "&#058;"
       elif _char == "x":
         _return += "&#120;"
       elif _char == "X":
         _return += "&#088;"
+      elif _char == "\n":
+        _return += "<br>\n"
       else:
         _return += _char
     else:
@@ -798,6 +897,16 @@ for _name in _names:
             _flush(_formats[_format]["reserved"] + _expand(_buffer))
             _flush(_formats[_format][""])
             _buffer = ""
+            
+          # - Check for reserved words.
+          elif (_buffer in _operators[_type] or
+                _buffer[1:] in _operators[_type]):
+            if _buffer[:1] in _eoln or _seperators:
+              _flush(_expand(_buffer[:1]))
+              _buffer = _buffer[1:]
+            _flush(_formats[_format]["operator"] + _expand(_buffer))
+            _flush(_formats[_format][""])
+            _buffer = ""            
  
           # - Check for numbers.
           elif _type <> '' and (_isnumeric(_buffer) or _isnumeric(_buffer[1:])):
@@ -829,4 +938,4 @@ for _name in _names:
     sys.stdout.flush()
     raise SystemExit 
   except IOError as _err :
-    _error(_err.strerror) 
+    _error(_err.strerror)
